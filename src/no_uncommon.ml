@@ -1,4 +1,9 @@
 (** [Uncommon] is a [Common], now with less name clashes. *)
+let len = Cstruct.length
+module Cstruct = struct
+  include Cstruct
+  let len = length
+end
 
 let kasprintf k fmt =
   Format.(kfprintf (fun _ -> k (flush_str_formatter ())) str_formatter fmt)
@@ -69,7 +74,7 @@ module Cs = struct
 
   let empty = create 0
 
-  let null cs = len cs = 0
+  let null cs = length cs = 0
 
   let (<+>) = append
 
@@ -84,7 +89,7 @@ module Cs = struct
       | 1             -> (get_uint8 cs1 i = get_uint8 cs2 i) && ok
       | _             -> ok
     in
-    let n1 = len cs1 and n2 = len cs2 in
+    let n1 = length cs1 and n2 = length cs2 in
     go true 0 (imin n1 n2) && n1 = n2
 
   let ct_find_uint8 ?(off=0) ~f cs =
@@ -95,7 +100,7 @@ module Cs = struct
             | (None, true) -> Some i
             | _            -> acc in
           go acc (succ i) (pred n) in
-    go None off (len cs - off)
+    go None off (length cs - off)
 
   let clone ?(off = 0) ?len cs =
     let len = match len with None -> cs.len - off | Some x -> x in

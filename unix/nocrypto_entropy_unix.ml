@@ -28,7 +28,7 @@ let reseed ?(bytes = a_little) ?(device = sys_rng) g =
     if n > 0 then
       let cs = read_cs fd n in
       Rng.reseed ~g cs ;
-      feed (n - Cstruct.len cs) fd in
+      feed (n - Cstruct.length cs) fd in
   bracket
     ~init:Unix.(fun () -> openfile device [O_RDONLY] 0)
     ~fini:Unix.close
